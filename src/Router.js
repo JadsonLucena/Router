@@ -28,4 +28,61 @@ class Router {
 
 	get routers () { return Object.keys(this.#routers).reverse(); }
 
+
+	async #loadContents(key) {
+
+		if (this.#routers[key].place && typeof this.#routers[key].place == 'string') {
+
+			let place = document.querySelector(this.#routers[key].place);
+
+			if (place) {
+
+				for (let content of this.#routers[key].contents.filter(e => e)) {
+
+					if (this.#isURL.test(content)) {
+
+						await fetch(content).then(async response => {
+
+							if (response.ok) {
+
+								await response.text().then(text => {
+
+									place.insertAdjacentHTML('beforeend', text);
+
+								}).catch(console.error);
+
+							} else {
+
+								console.error(response);
+
+							}
+
+						}).catch(console.error);
+
+					} else if (typeof content == 'string') {
+
+						place.insertAdjacentHTML('beforeend', content);
+
+					} else {
+
+						place.append(content);
+
+					}
+
+				}
+
+			} else {
+
+				throw 'HTMLElement not found';
+
+			}
+
+		} else if (this.#routers[key].contents.filter(e => e).length) {
+
+			throw 'Place not allowed';
+
+		}
+
+	}
+
 };
