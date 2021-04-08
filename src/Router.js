@@ -243,4 +243,50 @@ class Router {
 
 	}
 
+	remove(key = null) {
+
+		if (key) {
+			
+			if (!(key in this.#routers)) {
+
+				// throw 'Is not declared';
+				return null;
+
+			}
+
+		} else {
+
+			let keys = Object.keys(this.#routers);
+
+			if (keys.length) {
+
+				key = keys.pop();
+
+			} else {
+
+				// throw 'Does not exist';
+				return null;
+
+			}
+
+		}
+
+
+		this.#routers[key].scripts.elements.forEach(script => script.remove());
+
+		if (this.#routers[key].place && typeof this.#routers[key].place == 'string') {
+
+			let place = document.querySelector(this.#routers[key].place);
+
+			if (place)
+				place.innerHTML = '';
+
+		}
+
+		this.#routers[key].styles.elements.forEach(style => style.remove());
+
+		return delete this.#routers[key];
+
+	}
+
 };
