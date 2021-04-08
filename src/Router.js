@@ -30,6 +30,9 @@ class Router {
 
 		this.#routers = {};
 
+
+		window.onpopstate = e => e.state && this.load(e.state);
+
 	}
 
 
