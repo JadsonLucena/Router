@@ -161,4 +161,14 @@ class Router {
 
 	}
 
+	async #pageBuild(key) {
+
+		this.#routers[key].styles.elements = await this.#loadStyles(key).catch(console.error);
+
+		await this.#loadContents(key);
+
+		this.#routers[key].scripts.elements = this.#loadScripts(key);
+
+	}
+
 };
