@@ -122,4 +122,43 @@ class Router {
 
 	}
 
+	#loadStyles(key) {
+
+		return Promise.all(this.#routers[key].styles.contents.filter(e => e && typeof e == 'string').map(async style => {
+
+			return new Promise(resolve => {
+
+				if (this.#isURL.test(style)) {
+
+					let url = new URL(style, location.href);
+
+					let css = document.createElement('link');
+						css.rel = 'stylesheet';
+
+						url.searchParams.forEach((value, key) => css.setAttribute(key, value));
+
+						css.onload = () => resolve(css);
+						css.onerror = () => resolve(css);
+
+						css.href = url.host == location.host ? url.pathname : url.host + url.pathname;
+
+					document.head.append(css);
+
+				} else {
+
+					let css = document.createElement('style');
+						css.textContent = style;
+
+					document.head.append(css);
+
+					resolve(css);
+
+				}
+
+			}).catch(console.error);
+
+		}));
+
+	}
+
 };
