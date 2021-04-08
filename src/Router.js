@@ -208,4 +208,43 @@ class Router {
 
 	}
 
+	async redirect(path, title, {
+		contents = [],
+		place = null,
+		replace = false,
+		scripts = [],
+		styles = []
+	} = {}) {
+
+		// if (typeof path != 'string') {
+
+		// 	throw 'Path not allowed';
+
+		// } else if (typeof title != 'string') {
+
+		// 	throw 'Title not allowed';
+
+		// } else {
+
+			let state = {
+				'contents': contents,
+				'place': place,
+				'scripts': scripts,
+				'styles': styles,
+				'title': title
+			};
+
+
+			if (replace)
+				history.replaceState(state, title, path);
+			else
+				history.pushState(state, title, path);
+
+
+			return await this.load(state);
+
+		// }
+
+	}
+
 };
