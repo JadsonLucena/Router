@@ -85,4 +85,34 @@ class Router {
 
 	}
 
+	#loadScripts(key) {
+
+		return this.#routers[key].scripts.contents.filter(e => e && typeof e == 'string').map(script => {
+
+			let js = document.createElement('script');
+
+			if (this.#isURL.test(script)) {
+
+				let url = new URL(script, location.href);
+
+				url.searchParams.forEach((value, key) => js.setAttribute(key, value));
+
+				js.onerror = console.error;
+
+				js.src = url.host == location.host ? url.pathname : url.host + url.pathname;
+
+			} else {
+
+				js.textContent = script;
+
+			} 
+
+			document.documentElement.append(js);
+
+			return js;
+
+		});
+
+	}
+
 };
