@@ -164,4 +164,41 @@ class Router {
 
 	}
 
+	async load({
+		contents = [],
+		place = null,
+		scripts = [],
+		styles = [],
+		title = null
+	} = {}) {
+
+		if (title)
+			document.title = title;
+
+
+		let key = (() => { // UUID
+
+			let randomHex = size => Math.round(Math.random() * (Number.MAX_SAFE_INTEGER - Math.pow(2, 4 * size)) + Math.pow(2, 4 * size)).toString(16).slice(size * -1);
+
+			return randomHex(8) + '-' + randomHex(4) + '-' + randomHex(4) + '-' + randomHex(4) + '-' + randomHex(12);
+
+		})();
+
+
+		this.#routers[key] = {
+			contents: (typeof contents == 'string') ? [contents] : contents,
+			place: place,
+			scripts: { contents: (typeof scripts == 'string') ? [scripts] : scripts, elements: [] },
+			styles: { contents: (typeof styles == 'string') ? [styles] : styles, elements: [] },
+			title: title
+		};
+
+
+		await this.#pageBuild(key);
+
+
+		return key;
+
+	}
+
 };
